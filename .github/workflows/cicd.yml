@@ -1,4 +1,4 @@
-name: BFF Template CICD #change bff name
+name: BFF Template CICD
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
 
 jobs:
   CICD:
-    uses: mairie360/CICD/.github/workflows/BFFs-cicd.yml@mair-56-setup-open-api-gen
+    uses: mairie360/CICD/.github/workflows/BFFs-cicd.yml@v1.2.1
     with:
-      package_name: bff-files #change bff name
+      package_name: bff-files
       node_version: 20
     secrets: inherit
