@@ -1,7 +1,8 @@
-name: BFF Template CICD
+name: BFF Files CICD
 
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -13,5 +14,6 @@ jobs:
     uses: mairie360/CICD/.github/workflows/BFFs-cicd.yml@v1.13.2
     with:
       package_name: bff-files
-      node_version: 20
+      cicd_version: v1.13.2
+      node_version: "22"
     secrets: inherit

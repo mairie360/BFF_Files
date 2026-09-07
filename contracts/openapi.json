@@ -1,0 +1,388 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BFF Files API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "LibraryFile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "pdf",
+              "document",
+              "spreadsheet",
+              "image",
+              "archive"
+            ]
+          },
+          "sizeBytes": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sizeLabel": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "modifiedAt": {
+            "type": "string"
+          },
+          "isNew": {
+            "type": "boolean"
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "open",
+                "download",
+                "share",
+                "delete"
+              ]
+            },
+            "default": []
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "sizeBytes",
+          "sizeLabel",
+          "owner",
+          "category",
+          "modifiedAt"
+        ]
+      },
+      "FilesBootstrap": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LibraryFile"
+            }
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "currentUserName": {
+            "type": "string"
+          },
+          "canUpload": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "files",
+          "categories",
+          "currentUserName",
+          "canUpload"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Connectivity"
+        ],
+        "summary": "Vérifie la santé du BFF",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/check_apis": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Services disponibles"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    },
+    "/files/bootstrap": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Bibliothèque de l’utilisateur connecté",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilesBootstrap"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Données indisponibles ou incompatibles"
+          }
+        }
+      }
+    },
+    "/files": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "category": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    },
+    "/files/{fileId}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "fileId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "fileId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    },
+    "/files/{fileId}/download": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "fileId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    },
+    "/files/{fileId}/shares": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "fileId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    },
+    "/files/{fileId}/shares/{shareId}": {
+      "delete": {
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "fileId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "shareId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponse de l’API propriétaire"
+          },
+          "201": {
+            "description": "Création confirmée"
+          },
+          "204": {
+            "description": "Opération confirmée"
+          },
+          "401": {
+            "description": "Session invalide"
+          },
+          "502": {
+            "description": "Service indisponible"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {}
+}
